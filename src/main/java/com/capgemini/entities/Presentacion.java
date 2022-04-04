@@ -3,7 +3,9 @@ package com.capgemini.entities;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,6 +21,13 @@ public class Presentacion implements Serializable {
 	private String nombre;
 	private String descripcion;
 
+	// Presentacion es tabla padre de Producto
+	// Relaciona Presentacion (one) con Producto (many)
+	// mappedBy -> Foreign key de Presentacion es atributo "presentacion" de la
+	// entidad/tabla Producto
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, mappedBy = "presentacion")
+	private List<Producto> productos;
+
 	public Presentacion() {
 	}
 
@@ -26,6 +35,13 @@ public class Presentacion implements Serializable {
 		this.id = id;
 		this.nombre = nombre;
 		this.descripcion = descripcion;
+	}
+
+	public Presentacion(long id, String nombre, String descripcion, List<Producto> productos) {
+		this.id = id;
+		this.nombre = nombre;
+		this.descripcion = descripcion;
+		this.productos = productos;
 	}
 
 	public long getId() {
@@ -50,6 +66,14 @@ public class Presentacion implements Serializable {
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
+	}
+
+	public List<Producto> getProductos() {
+		return productos;
+	}
+
+	public void setProductos(List<Producto> productos) {
+		this.productos = productos;
 	}
 
 }

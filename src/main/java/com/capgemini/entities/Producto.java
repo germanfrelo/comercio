@@ -2,10 +2,13 @@ package com.capgemini.entities;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 // @Entity -> Para mapear esta clase con una base de datos
 @Entity
@@ -22,17 +25,31 @@ public class Producto implements Serializable {
 	private double precio;
 	private long stock;
 
+	// Producto es tabla hija de Presentacion
+	// Relaciona Producto (many) con Presentacion (one)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	// Fetch LAZY -> no traiga las consultas inmediatamente al generar el Producto
+	// Cascade PERSIST -> Persistir el cambio en la BD
+	private Presentacion presentacion;
+
 	public Producto() {
-		super();
 	}
 
 	public Producto(long id, String nombre, String descripcion, double precio, long stock) {
-		super();
 		this.id = id;
 		this.nombre = nombre;
 		this.descripcion = descripcion;
 		this.precio = precio;
 		this.stock = stock;
+	}
+
+	public Producto(long id, String nombre, String descripcion, double precio, long stock, Presentacion presentacion) {
+		this.id = id;
+		this.nombre = nombre;
+		this.descripcion = descripcion;
+		this.precio = precio;
+		this.stock = stock;
+		this.presentacion = presentacion;
 	}
 
 	public long getId() {
@@ -73,6 +90,14 @@ public class Producto implements Serializable {
 
 	public void setStock(long stock) {
 		this.stock = stock;
+	}
+
+	public Presentacion getPresentacion() {
+		return presentacion;
+	}
+
+	public void setPresentacion(Presentacion presentacion) {
+		this.presentacion = presentacion;
 	}
 
 }

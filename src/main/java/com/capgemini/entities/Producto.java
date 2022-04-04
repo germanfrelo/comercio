@@ -9,6 +9,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 // @Entity -> Para mapear esta clase con una base de datos
 @Entity
@@ -20,8 +24,15 @@ public class Producto implements Serializable {
 	@Id // @Id -> Primary key
 	@GeneratedValue(strategy = GenerationType.IDENTITY) // IDENTITY -> Not NULL y autoincremental
 	private long id;
+
+	@NotEmpty(message = "El campo nombre no puede estar vacio")
+	@Size(min = 4, max = 255, message = "El campo nombre tiene que tener entre 4 y 255 caracteres")
 	private String nombre;
+
+	@Size(max = 255, message = "El campo description no puede tener mas de 255 caracteres")
 	private String descripcion;
+
+	@Min(value = 0, message = "El precio no puede ser negativo")
 	private double precio;
 	private long stock;
 
@@ -30,6 +41,7 @@ public class Producto implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	// Fetch LAZY -> no traiga las consultas inmediatamente al generar el Producto
 	// Cascade PERSIST -> Persistir el cambio en la BD
+	@NotNull(message = "El producto tiene que tener una presentación")
 	private Presentacion presentacion;
 
 	public Producto() {

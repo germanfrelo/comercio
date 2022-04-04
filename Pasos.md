@@ -16,4 +16,4 @@ Comercio que vende productos, cada uno tiene su presentación.
 
 5. Relacionar bidireccionalmente las entidades/tablas BD Producto y Presentacion: many (Producto) to one (Presentacion)
 
-6. Para ejecutar el proyecto Spring Boot desde la terminal, previamente hay que tener las variables de entorno en Windows de Java ("JAVA_HOME" apuntado al JDK) y Maven ("MAVEN_HOME" apuntado al directorio donde hemos descargado Maven).
+6. Ejecutar el proyecto. Se crearán las tablas "producto" y "presentacion" en la BD "comercio" en MySQL. Comprobarlo. Para ejecutar el proyecto Spring Boot, previamente hay que tener las variables de entorno en Windows de Java ("JAVA_HOME" apuntado al JDK) y Maven ("MAVEN_HOME" apuntado al directorio donde hemos descargado Maven).

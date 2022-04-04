@@ -12,6 +12,6 @@ Comercio que vende productos, cada uno tiene su presentación.
 
 3. Rellenar src\main\resources\application.properties.
 
-4. Siguiendo patrón de diseño Facade: Crear paquete para entidades y dentro las clases.
+4. Siguiendo patrón de diseño Facade: Crear paquete para entidades y dentro las clases (Producto y Presentacion). Cada entidad será una tabla en BD.
 
-5. Crear tabla
+5. Relacionar bidireccionalmente las entidades/tablas BD Producto y Presentacion: many (Producto) to one (Presentacion)

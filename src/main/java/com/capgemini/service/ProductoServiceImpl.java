@@ -2,7 +2,9 @@ package com.capgemini.service;
 
 import java.util.List;
 
+import com.capgemini.dao.IPresentacionDao;
 import com.capgemini.dao.IProductoDao;
+import com.capgemini.entities.Presentacion;
 import com.capgemini.entities.Producto;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,10 @@ public class ProductoServiceImpl implements IProductoService {
 	// Spring buscará algo del tipo IProductoDao
 	@Autowired
 	private IProductoDao productoDao;
+
+	// Spring buscará algo del tipo IPresentacionDao
+	@Autowired
+	private IPresentacionDao presentacionDao;
 
 	@Override
 	public List<Producto> findAll(Sort sort) {
@@ -38,8 +44,15 @@ public class ProductoServiceImpl implements IProductoService {
 		productoDao.deleteById(id);
 	}
 
+	// Método save es para persistir el producto en la BD
 	@Override
 	public Producto save(Producto producto) {
+		// Antes de persistir el producto en la BD, hay que establecerle la presentación
+		// Presentación buscada por el ID de la presentación del producto que se
+		// recibe
+		Presentacion presentacion = presentacionDao.findById(producto.getPresentacion().getId()).get();
+		producto.setPresentacion(presentacion);
+
 		return productoDao.save(producto);
 	}
 

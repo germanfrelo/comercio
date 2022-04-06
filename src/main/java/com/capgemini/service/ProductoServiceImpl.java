@@ -44,7 +44,7 @@ public class ProductoServiceImpl implements IProductoService {
 		productoDao.deleteById(id);
 	}
 
-	// Método save es para persistir el producto en la BD
+	// Método para persistir el producto en la BD
 	@Override
 	public Producto save(Producto producto) {
 		// Antes de persistir el producto en la BD, hay que establecerle la presentación

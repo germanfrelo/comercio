@@ -1,18 +1,29 @@
 package com.capgemini.controllers;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.validation.Valid;
 
 import com.capgemini.entities.Producto;
 import com.capgemini.service.IProductoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -76,4 +87,48 @@ public class ProductoController {
 
 	}
 
+	// Persiste (guarda o inserta) un producto en la tabla producto
+	@PostMapping
+	// El producto viene en el cuerpo de la petición --> @RequestBody
+	// @Valid + BindingResult: para validar producto
+	public ResponseEntity<Map<String, Object>> insertar(@Valid @RequestBody Producto producto, BindingResult result) {
+
+		Map<String, Object> responseAsMap = new HashMap<>();
+
+		// Comprueba si producto tiene errores basándose en anotaciones atributos
+		// Producto
+		List<String> errores = null;
+
+		ResponseEntity<Map<String, Object>> responseEntity = null;
+
+		if (result.hasErrors()) {
+			errores = new ArrayList<>();
+
+			for (ObjectError error : result.getAllErrors()) {
+				errores.add(error.getDefaultMessage());
+			}
+
+			responseAsMap.put("errores", errores);
+			responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.BAD_REQUEST);
+		} else {
+			try {
+				Producto productoDB = productoService.save(producto);
+
+				if (productoDB != null) {
+					responseAsMap.put("mensaje", "El producto con ID " + productoDB.getId() + " se ha guardado.");
+					responseAsMap.put("producto", productoDB);
+					responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.CREATED);
+				} else {
+					responseAsMap.put("error", "No se ha podido crear el producto");
+					responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
+				}
+			} catch (DataAccessException e) {
+				responseAsMap.put("error crítico", e.getMostSpecificCause());
+				responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+
+		return responseEntity;
+
+	}
 }

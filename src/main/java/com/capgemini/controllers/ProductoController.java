@@ -131,4 +131,48 @@ public class ProductoController {
 		return responseEntity;
 
 	}
+
+	// Actualiza un producto
+	@PutMapping(value = "/{id}")
+	public ResponseEntity<Map<String, Object>> actualizar(@Valid @RequestBody Producto producto, BindingResult result,
+			@PathVariable int id) {
+
+		Map<String, Object> responseAsMap = new HashMap<>();
+		List<String> errores = null;
+		ResponseEntity<Map<String, Object>> responseEntity = null;
+
+		if (result.hasErrors()) {
+			errores = new ArrayList<>();
+
+			for (ObjectError error : result.getAllErrors()) {
+				errores.add(error.getDefaultMessage());
+			}
+
+			responseAsMap.put("errores", errores);
+			responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.BAD_REQUEST);
+		} else {
+			try {
+				// Antes de persistir el producto en la BD, establecerle el ID
+				producto.setId(id);
+
+				Producto productoDB = productoService.save(producto);
+
+				if (productoDB != null) {
+					responseAsMap.put("mensaje",
+							"El producto con ID " + productoDB.getId() + " se ha actualizado con éxito.");
+					responseAsMap.put("producto", productoDB);
+					responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.OK);
+				} else {
+					responseAsMap.put("error", "No se ha podido actualizar el producto.");
+					responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
+				}
+			} catch (DataAccessException e) {
+				responseAsMap.put("error crítico", e.getMostSpecificCause());
+				responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+
+		return responseEntity;
+
+	}
 }

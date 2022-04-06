@@ -47,7 +47,7 @@ public class ProductoController {
 		}
 
 		if (productos != null) {
-			responseEntity = new ResponseEntity<List<Producto>>(productos, HttpStatus.OK);
+			responseEntity = new ResponseEntity<>(productos, HttpStatus.OK);
 		} else {
 			responseEntity = new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}

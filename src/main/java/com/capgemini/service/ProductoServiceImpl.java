@@ -50,7 +50,10 @@ public class ProductoServiceImpl implements IProductoService {
 		// Antes de persistir el producto en la BD, hay que establecerle la presentación
 		// Presentación buscada por el ID de la presentación del producto que se
 		// recibe
-		Presentacion presentacion = presentacionDao.findById(producto.getPresentacion().getId()).get();
+		Presentacion presentacion = null;
+
+		presentacion = presentacionDao.findById(producto.getPresentacion().getId()).orElse(null);
+
 		producto.setPresentacion(presentacion);
 
 		return productoDao.save(producto);

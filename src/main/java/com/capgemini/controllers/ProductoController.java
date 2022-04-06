@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/productos")
 public class ProductoController {
+
 	// Controller pide a Service los productos
 	@Autowired // Inyecta una depedencia del objeto instanciado para no instanciarla con "new"
 	private IProductoService productoService;
@@ -29,6 +31,7 @@ public class ProductoController {
 	// Ejemplo paginados: https://localhost.8888/productos?page=1&size=5
 	@GetMapping // Peticiones GET llegan aquí
 	public ResponseEntity<List<Producto>> getProductos(
+			// @RequestParam --> "/productos?page=__&size=__"
 			@RequestParam(required = false) Integer page,
 			@RequestParam(required = false) Integer size) {
 
@@ -53,6 +56,24 @@ public class ProductoController {
 		}
 
 		return responseEntity;
+
+	}
+
+	// Recupera un producto por su ID ("/productos/id")
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<Producto> getProductoPorId(@PathVariable long id) {
+
+		ResponseEntity<Producto> responseEntity = null;
+		Producto producto = productoService.findById(id);
+
+		if (producto != null) {
+			responseEntity = new ResponseEntity<>(producto, HttpStatus.OK);
+		} else {
+			responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
+		return responseEntity;
+
 	}
 
 }

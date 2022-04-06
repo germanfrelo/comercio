@@ -11,6 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Presentacion implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -21,6 +23,7 @@ public class Presentacion implements Serializable {
 	private String nombre;
 	private String descripcion;
 
+	@JsonIgnore
 	// Presentacion es tabla padre de Producto
 	// Relaciona Presentacion (one) con Producto (many)
 	// mappedBy -> Foreign key de Presentacion es atributo "presentacion" de la

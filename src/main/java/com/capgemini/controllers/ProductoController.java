@@ -190,11 +190,11 @@ public class ProductoController {
 			if (productoBuscado != null) {
 				productoService.delete(id);
 				responseAsMap.put("mensaje",
-						"El producto con ID " + productoBuscado.getId() + " se ha eliminado con éxito.");
+						"Se ha eliminado el producto con ID " + productoBuscado.getId() + ".");
 				responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.NO_CONTENT);
 			} else {
 				responseAsMap.put("error", "No se ha podido eliminar el producto con ID " + id + " porque no existe.");
-				responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
+				responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.NOT_FOUND);
 			}
 		} catch (DataAccessException e) {
 			responseAsMap.put("error crítico", e.getMostSpecificCause());

@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -170,6 +171,34 @@ public class ProductoController {
 				responseAsMap.put("error crítico", e.getMostSpecificCause());
 				responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
+		}
+
+		return responseEntity;
+
+	}
+
+	// Elimina un producto
+	@DeleteMapping(value = "/{id}")
+	public ResponseEntity<Map<String, Object>> eliminar(@PathVariable int id) {
+
+		Map<String, Object> responseAsMap = new HashMap<>();
+		ResponseEntity<Map<String, Object>> responseEntity = null;
+
+		try {
+			Producto productoBuscado = productoService.findById(id);
+
+			if (productoBuscado != null) {
+				productoService.delete(id);
+				responseAsMap.put("mensaje",
+						"El producto con ID " + productoBuscado.getId() + " se ha eliminado con éxito.");
+				responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.NO_CONTENT);
+			} else {
+				responseAsMap.put("error", "No se ha podido eliminar el producto con ID " + id + " porque no existe.");
+				responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		} catch (DataAccessException e) {
+			responseAsMap.put("error crítico", e.getMostSpecificCause());
+			responseEntity = new ResponseEntity<>(responseAsMap, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		return responseEntity;
